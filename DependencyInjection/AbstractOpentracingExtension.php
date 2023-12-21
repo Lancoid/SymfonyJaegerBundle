@@ -48,7 +48,7 @@ abstract class AbstractOpentracingExtension extends Extension
     {
         /** @var string $projectDirectory */
         $projectDirectory = $container->getParameter('kernel.project_dir');
-        $container->setParameter('env(AUXMONEY_OPENTRACING_PROJECT_NAME)', basename($projectDirectory));
+        $container->setParameter('env(LANCOID_OPENTRACING_PROJECT_NAME)', basename($projectDirectory));
     }
 
     private function addTagsForPSR18Clients(ContainerBuilder $container): void

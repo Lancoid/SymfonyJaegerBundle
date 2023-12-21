@@ -11,13 +11,13 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class PSR18CompilerPass implements CompilerPassInterface
 {
-    public const TAG_PSR_18 = 'auxmoney_opentracing.psr_18';
+    public const TAG_PSR_18 = 'lancoid_opentracing.psr_18';
 
     public function process(ContainerBuilder $container): void
     {
         $psr18Clients = $container->findTaggedServiceIds(self::TAG_PSR_18);
         foreach (array_keys($psr18Clients) as $serviceId) {
-            $foo = 'auxmoney_opentracing.decorator.' . $serviceId;
+            $foo = 'lancoid_opentracing.decorator.' . $serviceId;
             $container->register($foo, PSR18ClientDecorator::class)
                 ->setDecoratedService($serviceId)
                 ->setArgument(0, new Reference($foo . '.inner'))

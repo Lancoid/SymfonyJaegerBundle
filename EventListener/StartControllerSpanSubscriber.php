@@ -35,7 +35,7 @@ final class StartControllerSpanSubscriber implements EventSubscriberInterface
     public function onController(KernelEvent $event): void
     {
         $attributes = $event->getRequest()->attributes;
-        $attributes->set('_auxmoney_controller', true);
+        $attributes->set('_lancoid_controller', true);
 
         $tags = [
             Constant::SPAN_ORIGIN => 'core:controller',
