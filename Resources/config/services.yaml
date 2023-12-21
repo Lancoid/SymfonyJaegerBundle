@@ -1,0 +1,111 @@
+parameters:
+  env(LANCOID_OPENTRACING_HOSTNAME): unknown
+  env(LANCOID_OPENTRACING_AGENT_HOST): localhost
+  env(LANCOID_OPENTRACING_AGENT_PORT): '6831'
+  env(LANCOID_OPENTRACING_SAMPLER_CLASS): Jaeger\Sampler\ConstSampler
+  env(LANCOID_OPENTRACING_SAMPLER_VALUE): 'true'
+  env(LANCOID_OPENTRACING_PROJECT_NAME): 'default will be provided by extension (basename(kernel.project_dir))'
+  env(LANCOID_OPENTRACING_RESPONSE_HEADER): 'true'
+  env(LANCOID_OPENTRACING_DOCTRINE_FULL_STATEMENT): 'true'
+  env(LANCOID_OPENTRACING_DOCTRINE_PARAMETERS): 'true'
+  env(LANCOID_OPENTRACING_DOCTRINE_ROW_COUNT): 'false'
+  env(LANCOID_OPENTRACING_DOCTRINE_USER): 'false'
+
+  lancoid_opentracing.hostname: '%env(LANCOID_OPENTRACING_HOSTNAME)%'
+  lancoid_opentracing.agent.host: '%env(LANCOID_OPENTRACING_AGENT_HOST)%'
+  lancoid_opentracing.agent.port: '%env(LANCOID_OPENTRACING_AGENT_PORT)%'
+  lancoid_opentracing.project.name: '%env(LANCOID_OPENTRACING_PROJECT_NAME)%'
+  lancoid_opentracing.sampler.class: '%env(LANCOID_OPENTRACING_SAMPLER_CLASS)%'
+  lancoid_opentracing.sampler.value: '%env(LANCOID_OPENTRACING_SAMPLER_VALUE)%'
+  lancoid_opentracing.response.header: '%env(LANCOID_OPENTRACING_RESPONSE_HEADER)%'
+  lancoid_opentracing.doctrine.tag_full_statement: '%env(LANCOID_OPENTRACING_DOCTRINE_FULL_STATEMENT)%'
+  lancoid_opentracing.doctrine.tag_parameters: '%env(LANCOID_OPENTRACING_DOCTRINE_PARAMETERS)%'
+  lancoid_opentracing.doctrine.tag_row_count: '%env(LANCOID_OPENTRACING_DOCTRINE_ROW_COUNT)%'
+  lancoid_opentracing.doctrine.tag_user: '%env(LANCOID_OPENTRACING_DOCTRINE_USER)%'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ### public service ###
+
+  Lancoid\OpentracingBundle\Service\Tracing:
+    class: Lancoid\OpentracingBundle\Service\TracingService
+    public: true
+  lancoid_opentracing:
+    alias: Lancoid\OpentracingBundle\Service\Tracing
+    public: true
+
+  ### internals ###
+
+  Lancoid\OpentracingBundle\Factory\SpanOptionsFactory:
+    class: Lancoid\OpentracingBundle\Factory\RequestSpanOptionsFactory
+    arguments:
+      $kernelDebug: '%kernel.debug%'
+      $kernelEnvironment: '%kernel.environment%'
+      $hostName: '%lancoid_opentracing.hostname%'
+
+  Lancoid\OpentracingBundle\Factory\AgentHostResolver:
+    class: Lancoid\OpentracingBundle\Factory\DefaultAgentHostResolver
+
+  Lancoid\OpentracingBundle\Internal\Opentracing:
+    class: Lancoid\OpentracingBundle\Internal\CachedOpentracing
+    arguments:
+      $projectName: '%lancoid_opentracing.project.name%'
+      $agentHost: '%lancoid_opentracing.agent.host%'
+      $agentPort: '%lancoid_opentracing.agent.port%'
+      $samplerClass: '%lancoid_opentracing.sampler.class%'
+      $samplerValue: '%lancoid_opentracing.sampler.value%'
+
+  Lancoid\OpentracingBundle\Internal\Persistence:
+    class: Lancoid\OpentracingBundle\Internal\PersistenceService
+
+  Lancoid\OpentracingBundle\Internal\Utility:
+    class: Lancoid\OpentracingBundle\Internal\UtilityService
+
+  Lancoid\OpentracingBundle\Internal\Decorator\RequestSpanning:
+    class: Lancoid\OpentracingBundle\Internal\Decorator\RequestSpanningService
+
+  ### event subscribers ###
+
+  Lancoid\OpentracingBundle\EventListener\StartRootSpanSubscriber: ~
+  Lancoid\OpentracingBundle\EventListener\FinishRootSpanSubscriber: ~
+  Lancoid\OpentracingBundle\EventListener\StartControllerSpanSubscriber: ~
+  Lancoid\OpentracingBundle\EventListener\FinishControllerSpanSubscriber:
+    arguments:
+      $returnTraceId: '%lancoid_opentracing.response.header%'
+  Lancoid\OpentracingBundle\EventListener\StartCommandSpanSubscriber: ~
+  Lancoid\OpentracingBundle\EventListener\FinishCommandSpanSubscriber: ~
+  Lancoid\OpentracingBundle\EventListener\ExceptionLogSubscriber: ~
+
+  ### jaeger ###
+
+  Lancoid\OpentracingBundle\Factory\JaegerConfigFactory:
+    class: Lancoid\OpentracingBundle\Factory\JaegerStaticConfigFactory
+
+  Lancoid\OpentracingBundle\Factory\TracerFactory:
+    class: Lancoid\OpentracingBundle\Factory\JaegerTracerFactory
+
+  Lancoid\OpentracingBundle\Internal\TracingId:
+    class: Lancoid\OpentracingBundle\Internal\JaegerTracingId
+
+  ### doctrine ###
+
+  lancoid_opentracing.doctrine.dbal.connection_factory:
+    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\TracingConnectionFactory
+    decorates: doctrine.dbal.connection_factory
+    arguments:
+      $connectionFactory: '@lancoid_opentracing.doctrine.dbal.connection_factory.inner'
+
+  Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLStatementFormatter:
+    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLStatementFormatterService
+
+  Lancoid\OpentracingDoctrineDBALBundle\DBAL\SpanFactory:
+    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLSpanFactory
+    arguments:
+      $tagFullStatement: '%lancoid_opentracing.doctrine.tag_full_statement%'
+      $tagParameters: '%lancoid_opentracing.doctrine.tag_parameters%'
+      $tagRowCount: '%lancoid_opentracing.doctrine.tag_row_count%'
+      $tagUser: '%lancoid_opentracing.doctrine.tag_user%'

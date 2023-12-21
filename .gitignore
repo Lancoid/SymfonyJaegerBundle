@@ -1,0 +1,5 @@
+.phpunit.result.cache
+/.php-version
+/build/
+/vendor/
+.idea
