@@ -1,8 +1,8 @@
 {
-    "name": "auxmoney/opentracing-bundle-core",
+    "name": "lancoid/symfony-jaeger-bundle",
     "description": "Symfony Opentracing bundle to easily enable distributed tracing",
     "keywords": [
-        "auxmoney",
+        "jaeger",
         "opentracing",
         "opentracing-bundle",
         "symfony",
