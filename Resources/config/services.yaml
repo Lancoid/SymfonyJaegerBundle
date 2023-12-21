@@ -31,27 +31,27 @@ services:
 
   ### public service ###
 
-  Lancoid\OpentracingBundle\Service\Tracing:
-    class: Lancoid\OpentracingBundle\Service\TracingService
+  Lancoid\SymfonyJaegerBundle\Service\Tracing:
+    class: Lancoid\SymfonyJaegerBundle\Service\TracingService
     public: true
   lancoid_opentracing:
-    alias: Lancoid\OpentracingBundle\Service\Tracing
+    alias: Lancoid\SymfonyJaegerBundle\Service\Tracing
     public: true
 
   ### internals ###
 
-  Lancoid\OpentracingBundle\Factory\SpanOptionsFactory:
-    class: Lancoid\OpentracingBundle\Factory\RequestSpanOptionsFactory
+  Lancoid\SymfonyJaegerBundle\Factory\SpanOptionsFactory:
+    class: Lancoid\SymfonyJaegerBundle\Factory\RequestSpanOptionsFactory
     arguments:
       $kernelDebug: '%kernel.debug%'
       $kernelEnvironment: '%kernel.environment%'
       $hostName: '%lancoid_opentracing.hostname%'
 
-  Lancoid\OpentracingBundle\Factory\AgentHostResolver:
-    class: Lancoid\OpentracingBundle\Factory\DefaultAgentHostResolver
+  Lancoid\SymfonyJaegerBundle\Factory\AgentHostResolver:
+    class: Lancoid\SymfonyJaegerBundle\Factory\DefaultAgentHostResolver
 
-  Lancoid\OpentracingBundle\Internal\Opentracing:
-    class: Lancoid\OpentracingBundle\Internal\CachedOpentracing
+  Lancoid\SymfonyJaegerBundle\Internal\Opentracing:
+    class: Lancoid\SymfonyJaegerBundle\Internal\CachedOpentracing
     arguments:
       $projectName: '%lancoid_opentracing.project.name%'
       $agentHost: '%lancoid_opentracing.agent.host%'
@@ -59,51 +59,51 @@ services:
       $samplerClass: '%lancoid_opentracing.sampler.class%'
       $samplerValue: '%lancoid_opentracing.sampler.value%'
 
-  Lancoid\OpentracingBundle\Internal\Persistence:
-    class: Lancoid\OpentracingBundle\Internal\PersistenceService
+  Lancoid\SymfonyJaegerBundle\Internal\Persistence:
+    class: Lancoid\SymfonyJaegerBundle\Internal\PersistenceService
 
-  Lancoid\OpentracingBundle\Internal\Utility:
-    class: Lancoid\OpentracingBundle\Internal\UtilityService
+  Lancoid\SymfonyJaegerBundle\Internal\Utility:
+    class: Lancoid\SymfonyJaegerBundle\Internal\UtilityService
 
-  Lancoid\OpentracingBundle\Internal\Decorator\RequestSpanning:
-    class: Lancoid\OpentracingBundle\Internal\Decorator\RequestSpanningService
+  Lancoid\SymfonyJaegerBundle\Internal\Decorator\RequestSpanning:
+    class: Lancoid\SymfonyJaegerBundle\Internal\Decorator\RequestSpanningService
 
   ### event subscribers ###
 
-  Lancoid\OpentracingBundle\EventListener\StartRootSpanSubscriber: ~
-  Lancoid\OpentracingBundle\EventListener\FinishRootSpanSubscriber: ~
-  Lancoid\OpentracingBundle\EventListener\StartControllerSpanSubscriber: ~
-  Lancoid\OpentracingBundle\EventListener\FinishControllerSpanSubscriber:
+  Lancoid\SymfonyJaegerBundle\EventListener\StartRootSpanSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\FinishRootSpanSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\StartControllerSpanSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\FinishControllerSpanSubscriber:
     arguments:
       $returnTraceId: '%lancoid_opentracing.response.header%'
-  Lancoid\OpentracingBundle\EventListener\StartCommandSpanSubscriber: ~
-  Lancoid\OpentracingBundle\EventListener\FinishCommandSpanSubscriber: ~
-  Lancoid\OpentracingBundle\EventListener\ExceptionLogSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\StartCommandSpanSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\FinishCommandSpanSubscriber: ~
+  Lancoid\SymfonyJaegerBundle\EventListener\ExceptionLogSubscriber: ~
 
   ### jaeger ###
 
-  Lancoid\OpentracingBundle\Factory\JaegerConfigFactory:
-    class: Lancoid\OpentracingBundle\Factory\JaegerStaticConfigFactory
+  Lancoid\SymfonyJaegerBundle\Factory\JaegerConfigFactory:
+    class: Lancoid\SymfonyJaegerBundle\Factory\JaegerStaticConfigFactory
 
-  Lancoid\OpentracingBundle\Factory\TracerFactory:
-    class: Lancoid\OpentracingBundle\Factory\JaegerTracerFactory
+  Lancoid\SymfonyJaegerBundle\Factory\TracerFactory:
+    class: Lancoid\SymfonyJaegerBundle\Factory\JaegerTracerFactory
 
-  Lancoid\OpentracingBundle\Internal\TracingId:
-    class: Lancoid\OpentracingBundle\Internal\JaegerTracingId
+  Lancoid\SymfonyJaegerBundle\Internal\TracingId:
+    class: Lancoid\SymfonyJaegerBundle\Internal\JaegerTracingId
 
   ### doctrine ###
 
   lancoid_opentracing.doctrine.dbal.connection_factory:
-    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\TracingConnectionFactory
+    class: Lancoid\SymfonyJaegerBundle\DBAL\TracingConnectionFactory
     decorates: doctrine.dbal.connection_factory
     arguments:
       $connectionFactory: '@lancoid_opentracing.doctrine.dbal.connection_factory.inner'
 
-  Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLStatementFormatter:
-    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLStatementFormatterService
+  Lancoid\SymfonyJaegerBundle\DBAL\SQLStatementFormatter:
+    class: Lancoid\SymfonyJaegerBundle\DBAL\SQLStatementFormatterService
 
-  Lancoid\OpentracingDoctrineDBALBundle\DBAL\SpanFactory:
-    class: Lancoid\OpentracingDoctrineDBALBundle\DBAL\SQLSpanFactory
+  Lancoid\SymfonyJaegerBundle\DBAL\SpanFactory:
+    class: Lancoid\SymfonyJaegerBundle\DBAL\SQLSpanFactory
     arguments:
       $tagFullStatement: '%lancoid_opentracing.doctrine.tag_full_statement%'
       $tagParameters: '%lancoid_opentracing.doctrine.tag_parameters%'
