@@ -43,7 +43,8 @@
         "mtdowling/jmespath.php": "^2.6",
         "guzzlehttp/guzzle": "^7.5",
         "phpstan/phpstan": "^1.5",
-        "php-coveralls/php-coveralls": "^2.5"
+        "php-coveralls/php-coveralls": "^2.5",
+        "phpunit/phpunit": "^10.5"
     },
     "autoload": {
         "psr-4": {
@@ -59,6 +60,7 @@
         ],
         "phpmd": "vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode --exclude vendor,Tests",
         "phpcs": "vendor/bin/phpcs",
-        "phpstan": "vendor/bin/phpstan analyse --no-progress"
+        "phpstan": "vendor/bin/phpstan analyse --no-progress",
+        "phpunit": "XDEBUG_MODE=coverage vendor/bin/phpunit --colors=never --testsuite=unit"
     }
 }

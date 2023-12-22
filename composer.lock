@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af9b48211ddb87e0f392bde25c79a9b5",
+    "content-hash": "155baec34e16a10feaf76ba6ba3e0288",
     "packages": [
         {
             "name": "auxmoney/jaeger-php",

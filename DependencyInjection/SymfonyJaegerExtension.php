@@ -11,31 +11,21 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-abstract class AbstractOpentracingExtension extends Extension
+final class SymfonyJaegerExtension extends Extension
 {
     /**
      * @param array<mixed> $configs
      * @throws Exception
-     * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $this->loadBundleServices($container);
-        $this->loadCoreServices($container);
         $this->overwriteProjectNameParameter($container);
         $this->addTagsForPSR18Clients($container);
     }
 
-    /**
-     * @throws Exception
-     */
-    abstract protected function loadBundleServices(ContainerBuilder $container): void;
-
-    /**
-     * @throws Exception
-     */
-    private function loadCoreServices(ContainerBuilder $container): void
+    protected function loadBundleServices(ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader(
             $container,
@@ -55,4 +45,6 @@ abstract class AbstractOpentracingExtension extends Extension
     {
         $container->registerForAutoconfiguration(ClientInterface::class)->addTag(PSR18CompilerPass::TAG_PSR_18);
     }
+
+
 }
