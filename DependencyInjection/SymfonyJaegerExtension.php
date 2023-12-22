@@ -38,7 +38,7 @@ final class SymfonyJaegerExtension extends Extension
     {
         /** @var string $projectDirectory */
         $projectDirectory = $container->getParameter('kernel.project_dir');
-        $container->setParameter('env(LANCOID_OPENTRACING_PROJECT_NAME)', basename($projectDirectory));
+        $container->setParameter('env(JAEGER_OPENTRACING_PROJECT_NAME)', basename($projectDirectory));
     }
 
     private function addTagsForPSR18Clients(ContainerBuilder $container): void

@@ -139,13 +139,7 @@ final class TracingService implements Tracing
         }
 
         $baggageItem = $activeSpan->getBaggageItem($key);
-        $activeSpan->log(
-            [
-                'event' => 'baggage.get',
-                'key' => $key,
-                'value' => $baggageItem,
-            ]
-        );
+        $activeSpan->log(['event' => 'baggage.get', 'key' => $key, 'value' => $baggageItem]);
         return $baggageItem;
     }
 }

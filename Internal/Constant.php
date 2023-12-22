@@ -15,5 +15,5 @@ class Constant
      *  - core:command
      *  - dbal:transaction
      */
-    public const SPAN_ORIGIN = 'lancoid-symfony-jaeger-bundle.span-origin';
+    public const SPAN_ORIGIN = 'symfony-jaeger-bundle.span-origin';
 }

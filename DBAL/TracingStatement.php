@@ -13,7 +13,7 @@ use IteratorAggregate;
  */
 final class TracingStatement implements IteratorAggregate, StatementCombinedResult, WrappingStatement
 {
-    private  $statement;
+    private $statement;
     private string $sql;
     private SpanFactory $spanFactory;
     private ?string $username;

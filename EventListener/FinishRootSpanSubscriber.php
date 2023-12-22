@@ -33,7 +33,6 @@ final class FinishRootSpanSubscriber implements EventSubscriberInterface
 
     public function onFinishRequest(KernelEvent $event): void
     {
-        # TODO: when Symfony 4.4 is unmaintained (November 2023), remove outer if-block in favor of isMainRequest()
         if (method_exists($event, 'isMainRequest')) {
             if (!$event->isMainRequest()) {
                 return;
@@ -49,7 +48,6 @@ final class FinishRootSpanSubscriber implements EventSubscriberInterface
 
     public function onTerminate(KernelEvent $event): void
     {
-        # TODO: when Symfony 4.4 is unmaintained (November 2023), remove outer if-block in favor of isMainRequest()
         if (method_exists($event, 'isMainRequest')) {
             if (!$event->isMainRequest()) {
                 return;

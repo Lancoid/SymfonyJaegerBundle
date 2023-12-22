@@ -26,11 +26,7 @@ final class FinishControllerSpanSubscriber implements EventSubscriberInterface
     ) {
         $this->tracing = $tracing;
         $this->tracingId = $tracingId;
-        $this->returnTraceId = filter_var(
-            $returnTraceId,
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        ) ?? true;
+        $this->returnTraceId = filter_var($returnTraceId, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true;
     }
 
     /**
@@ -48,7 +44,7 @@ final class FinishControllerSpanSubscriber implements EventSubscriberInterface
         $attributes = $event->getRequest()->attributes;
 
         // This check ensures there was a span started on a corresponding kernel.controller event for this request
-        if ($attributes->has('_lancoid_controller')) {
+        if ($attributes->has('_jaeger_controller')) {
             $response = $event->getResponse();
 
             $this->addTagsFromStatusCode($response);
@@ -71,7 +67,7 @@ final class FinishControllerSpanSubscriber implements EventSubscriberInterface
     private function addTraceIdHeader(?Response $response): void
     {
         if ($response && $this->returnTraceId) {
-            $response->headers->set('X-Lancoid-Opentracing-Trace-Id', $this->tracingId->getAsString());
+            $response->headers->set('X-Jaeger-Opentracing-Trace-Id', $this->tracingId->getAsString());
         }
     }
 }

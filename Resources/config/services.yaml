@@ -1,27 +1,27 @@
 parameters:
-  env(LANCOID_OPENTRACING_HOSTNAME): unknown
-  env(LANCOID_OPENTRACING_AGENT_HOST): localhost
-  env(LANCOID_OPENTRACING_AGENT_PORT): '6831'
-  env(LANCOID_OPENTRACING_SAMPLER_CLASS): Jaeger\Sampler\ConstSampler
-  env(LANCOID_OPENTRACING_SAMPLER_VALUE): 'true'
-  env(LANCOID_OPENTRACING_PROJECT_NAME): 'default will be provided by extension (basename(kernel.project_dir))'
-  env(LANCOID_OPENTRACING_RESPONSE_HEADER): 'true'
-  env(LANCOID_OPENTRACING_DOCTRINE_FULL_STATEMENT): 'true'
-  env(LANCOID_OPENTRACING_DOCTRINE_PARAMETERS): 'true'
-  env(LANCOID_OPENTRACING_DOCTRINE_ROW_COUNT): 'false'
-  env(LANCOID_OPENTRACING_DOCTRINE_USER): 'false'
+  env(JAEGER_OPENTRACING_HOSTNAME): unknown
+  env(JAEGER_OPENTRACING_AGENT_HOST): localhost
+  env(JAEGER_OPENTRACING_AGENT_PORT): '6831'
+  env(JAEGER_OPENTRACING_SAMPLER_CLASS): Jaeger\Sampler\ConstSampler
+  env(JAEGER_OPENTRACING_SAMPLER_VALUE): 'true'
+  env(JAEGER_OPENTRACING_PROJECT_NAME): 'default will be provided by extension (basename(kernel.project_dir))'
+  env(JAEGER_OPENTRACING_RESPONSE_HEADER): 'true'
+  env(JAEGER_OPENTRACING_DOCTRINE_FULL_STATEMENT): 'true'
+  env(JAEGER_OPENTRACING_DOCTRINE_PARAMETERS): 'true'
+  env(JAEGER_OPENTRACING_DOCTRINE_ROW_COUNT): 'false'
+  env(JAEGER_OPENTRACING_DOCTRINE_USER): 'false'
 
-  lancoid_opentracing.hostname: '%env(LANCOID_OPENTRACING_HOSTNAME)%'
-  lancoid_opentracing.agent.host: '%env(LANCOID_OPENTRACING_AGENT_HOST)%'
-  lancoid_opentracing.agent.port: '%env(LANCOID_OPENTRACING_AGENT_PORT)%'
-  lancoid_opentracing.project.name: '%env(LANCOID_OPENTRACING_PROJECT_NAME)%'
-  lancoid_opentracing.sampler.class: '%env(LANCOID_OPENTRACING_SAMPLER_CLASS)%'
-  lancoid_opentracing.sampler.value: '%env(LANCOID_OPENTRACING_SAMPLER_VALUE)%'
-  lancoid_opentracing.response.header: '%env(LANCOID_OPENTRACING_RESPONSE_HEADER)%'
-  lancoid_opentracing.doctrine.tag_full_statement: '%env(LANCOID_OPENTRACING_DOCTRINE_FULL_STATEMENT)%'
-  lancoid_opentracing.doctrine.tag_parameters: '%env(LANCOID_OPENTRACING_DOCTRINE_PARAMETERS)%'
-  lancoid_opentracing.doctrine.tag_row_count: '%env(LANCOID_OPENTRACING_DOCTRINE_ROW_COUNT)%'
-  lancoid_opentracing.doctrine.tag_user: '%env(LANCOID_OPENTRACING_DOCTRINE_USER)%'
+  jaeger_opentracing.hostname: '%env(JAEGER_OPENTRACING_HOSTNAME)%'
+  jaeger_opentracing.agent.host: '%env(JAEGER_OPENTRACING_AGENT_HOST)%'
+  jaeger_opentracing.agent.port: '%env(JAEGER_OPENTRACING_AGENT_PORT)%'
+  jaeger_opentracing.project.name: '%env(JAEGER_OPENTRACING_PROJECT_NAME)%'
+  jaeger_opentracing.sampler.class: '%env(JAEGER_OPENTRACING_SAMPLER_CLASS)%'
+  jaeger_opentracing.sampler.value: '%env(JAEGER_OPENTRACING_SAMPLER_VALUE)%'
+  jaeger_opentracing.response.header: '%env(JAEGER_OPENTRACING_RESPONSE_HEADER)%'
+  jaeger_opentracing.doctrine.tag_full_statement: '%env(JAEGER_OPENTRACING_DOCTRINE_FULL_STATEMENT)%'
+  jaeger_opentracing.doctrine.tag_parameters: '%env(JAEGER_OPENTRACING_DOCTRINE_PARAMETERS)%'
+  jaeger_opentracing.doctrine.tag_row_count: '%env(JAEGER_OPENTRACING_DOCTRINE_ROW_COUNT)%'
+  jaeger_opentracing.doctrine.tag_user: '%env(JAEGER_OPENTRACING_DOCTRINE_USER)%'
 
 services:
   _defaults:
@@ -45,7 +45,7 @@ services:
     arguments:
       $kernelDebug: '%kernel.debug%'
       $kernelEnvironment: '%kernel.environment%'
-      $hostName: '%lancoid_opentracing.hostname%'
+      $hostName: '%jaeger_opentracing.hostname%'
 
   Lancoid\SymfonyJaegerBundle\Factory\AgentHostResolver:
     class: Lancoid\SymfonyJaegerBundle\Factory\DefaultAgentHostResolver
@@ -53,11 +53,11 @@ services:
   Lancoid\SymfonyJaegerBundle\Internal\Opentracing:
     class: Lancoid\SymfonyJaegerBundle\Internal\CachedOpentracing
     arguments:
-      $projectName: '%lancoid_opentracing.project.name%'
-      $agentHost: '%lancoid_opentracing.agent.host%'
-      $agentPort: '%lancoid_opentracing.agent.port%'
-      $samplerClass: '%lancoid_opentracing.sampler.class%'
-      $samplerValue: '%lancoid_opentracing.sampler.value%'
+      $projectName: '%jaeger_opentracing.project.name%'
+      $agentHost: '%jaeger_opentracing.agent.host%'
+      $agentPort: '%jaeger_opentracing.agent.port%'
+      $samplerClass: '%jaeger_opentracing.sampler.class%'
+      $samplerValue: '%jaeger_opentracing.sampler.value%'
 
   Lancoid\SymfonyJaegerBundle\Internal\Persistence:
     class: Lancoid\SymfonyJaegerBundle\Internal\PersistenceService
@@ -75,7 +75,7 @@ services:
   Lancoid\SymfonyJaegerBundle\EventListener\StartControllerSpanSubscriber: ~
   Lancoid\SymfonyJaegerBundle\EventListener\FinishControllerSpanSubscriber:
     arguments:
-      $returnTraceId: '%lancoid_opentracing.response.header%'
+      $returnTraceId: '%jaeger_opentracing.response.header%'
   Lancoid\SymfonyJaegerBundle\EventListener\StartCommandSpanSubscriber: ~
   Lancoid\SymfonyJaegerBundle\EventListener\FinishCommandSpanSubscriber: ~
   Lancoid\SymfonyJaegerBundle\EventListener\ExceptionLogSubscriber: ~
@@ -105,7 +105,7 @@ services:
   Lancoid\SymfonyJaegerBundle\DBAL\SpanFactory:
     class: Lancoid\SymfonyJaegerBundle\DBAL\SQLSpanFactory
     arguments:
-      $tagFullStatement: '%lancoid_opentracing.doctrine.tag_full_statement%'
-      $tagParameters: '%lancoid_opentracing.doctrine.tag_parameters%'
-      $tagRowCount: '%lancoid_opentracing.doctrine.tag_row_count%'
-      $tagUser: '%lancoid_opentracing.doctrine.tag_user%'
+      $tagFullStatement: '%jaeger_opentracing.doctrine.tag_full_statement%'
+      $tagParameters: '%jaeger_opentracing.doctrine.tag_parameters%'
+      $tagRowCount: '%jaeger_opentracing.doctrine.tag_row_count%'
+      $tagUser: '%jaeger_opentracing.doctrine.tag_user%'

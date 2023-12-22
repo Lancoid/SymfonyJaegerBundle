@@ -35,7 +35,7 @@ final class StartControllerSpanSubscriber implements EventSubscriberInterface
     public function onController(KernelEvent $event): void
     {
         $attributes = $event->getRequest()->attributes;
-        $attributes->set('_lancoid_controller', true);
+        $attributes->set('_jaeger_controller', true);
 
         $tags = [
             Constant::SPAN_ORIGIN => 'core:controller',
@@ -46,11 +46,6 @@ final class StartControllerSpanSubscriber implements EventSubscriberInterface
             $tags['route_params'] = json_encode($attributes->get('_route_params'), JSON_THROW_ON_ERROR);
         }
 
-        $this->tracing->startActiveSpan(
-            $attributes->get('_controller'),
-            [
-                'tags' => $tags
-            ]
-        );
+        $this->tracing->startActiveSpan($attributes->get('_controller'), ['tags' => $tags]);
     }
 }
