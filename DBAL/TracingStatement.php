@@ -13,7 +13,7 @@ use IteratorAggregate;
  */
 final class TracingStatement implements IteratorAggregate, StatementCombinedResult, WrappingStatement
 {
-    private $statement;
+    private Result|Statement $statement;
     private string $sql;
     private SpanFactory $spanFactory;
     private ?string $username;
@@ -125,7 +125,7 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
      * @param array<mixed>|null $params
      * @return bool
      */
-    public function execute($params = null): Result
+    public function execute($params = null):  Result
     {
         $this->spanFactory->beforeOperation($this->sql);
         $result = $this->statement->execute($params);
@@ -147,11 +147,11 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
     }
 
     /**
-     * @return Statement<Statement>
+     * @return Result
      */
-    public function getIterator(): Statement
+    public function getIterator(): \ArrayObject
     {
-        return $this->statement;
+        return new \ArrayObject($this->statement);
     }
 
     public function getWrappedStatement(): Statement
